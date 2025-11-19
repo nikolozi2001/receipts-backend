@@ -83,8 +83,10 @@ async function searchByAuto(carNumber) {
 }
 
 /**
- * PUBLIC API ROUTE
+ * PUBLIC API ROUTES
  */
+
+// POST endpoint (for programmatic use with JSON body)
 app.post("/api/receipt-by-car", async (req, res) => {
   const { carNumber } = req.body;
 
@@ -94,6 +96,23 @@ app.post("/api/receipt-by-car", async (req, res) => {
 
   try {
     const result = await searchByAuto(carNumber);
+    res.json(result);
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// GET endpoint (for easy browser testing with query params)
+app.get("/api/receipt-by-car", async (req, res) => {
+  const { plate } = req.query;
+
+  if (!plate) {
+    return res.status(400).json({ error: "plate query parameter is required" });
+  }
+
+  try {
+    const result = await searchByAuto(plate);
     res.json(result);
   } catch (err) {
     console.error("Server error:", err);
