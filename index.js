@@ -36,9 +36,7 @@ function startServer() {
   });
 }
 
-// Start the server if this file is run directly
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-  startServer();
-}
+// Start the server
+startServer();
 
 export { startServer };
