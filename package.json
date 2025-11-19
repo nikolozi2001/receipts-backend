@@ -1,0 +1,23 @@
+{
+  "name": "receipts-backend",
+  "version": "1.0.0",
+  "description": "A Node.js Express API that serves as a proxy to search for police protocol receipts by car number from the Georgian police database",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["api", "police", "georgia", "receipts", "proxy", "express", "node"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cheerio": "^1.1.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  }
+}
