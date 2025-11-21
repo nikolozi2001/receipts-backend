@@ -7,6 +7,19 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "pm2:start": "pm2 start ecosystem.config.json --env production",
+    "pm2:dev": "pm2 start ecosystem.config.json --env development",
+    "pm2:staging": "pm2 start ecosystem.config.json --env staging",
+    "pm2:cluster": "pm2 start ecosystem.config.json --only receipts-backend-cluster",
+    "pm2:stop": "pm2 stop receipts-backend",
+    "pm2:restart": "pm2 restart receipts-backend",
+    "pm2:reload": "pm2 reload receipts-backend",
+    "pm2:delete": "pm2 delete receipts-backend",
+    "pm2:logs": "pm2 logs receipts-backend",
+    "pm2:monit": "pm2 monit",
+    "pm2:status": "pm2 status",
+    "pm2:save": "pm2 save",
+    "pm2:resurrect": "pm2 resurrect",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -30,6 +43,7 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "pm2": "^6.0.13"
   }
 }
