@@ -53,20 +53,21 @@ async function testConnectivity() {
       console.log('❌ Server IP access failed:', error.message);
     }
     
-    // Test 5: Check firewall/iptables
-    console.log('\n5. Checking firewall status...');
+    // Test 5: Check firewall/network status (Windows & Linux)
+    console.log('\n5. Checking network status...');
     try {
-      const { stdout: iptables } = await execAsync('iptables -L -n | grep 3001 || echo "No iptables rules found for port 3001"');
-      console.log('iptables rules for port 3001:');
-      console.log(iptables);
+      // Windows commands
+      const { stdout: netstat } = await execAsync('netstat -ano | findstr :3001 || netstat -tuln | grep :3001 || echo "Port not found"');
+      console.log('Port 3001 listening status:');
+      console.log(netstat);
     } catch (error) {
-      console.log('Could not check iptables (may need sudo)');
+      console.log('Could not check port status');
     }
     
-    // Test 6: Network interface info
+    // Test 6: Network interface info (Windows & Linux)
     console.log('\n6. Network interface information...');
     try {
-      const { stdout: interfaces } = await execAsync('ip addr show || ifconfig');
+      const { stdout: interfaces } = await execAsync('ipconfig /all || ip addr show || ifconfig');
       console.log('Network interfaces:');
       console.log(interfaces);
     } catch (error) {
@@ -83,30 +84,42 @@ console.log(`
 📋 Manual Testing Instructions:
 =====================================
 
-1. From the server (192.168.3.3), test:
+1. From the Windows server (192.168.3.3), test in PowerShell:
    curl http://localhost:3001/health
    curl http://127.0.0.1:3001/health  
    curl http://192.168.3.3:3001/health
+   
+   Or use Invoke-WebRequest:
+   Invoke-WebRequest -Uri "http://localhost:3001/health"
+   Invoke-WebRequest -Uri "http://192.168.3.3:3001/health"
 
 2. From another PC on the network:
    curl http://192.168.3.3:3001/health
    
-3. Check firewall settings:
-   sudo ufw status (Ubuntu/Debian)
-   sudo firewall-cmd --list-ports (CentOS/RHEL)
+   Or in browser: http://192.168.3.3:3001/health
+
+3. Windows Firewall Commands:
+   # Check if rule exists
+   Get-NetFirewallRule -DisplayName "Allow Port 3001"
    
-4. Open port 3001 if needed:
-   sudo ufw allow 3001 (Ubuntu/Debian)
-   sudo firewall-cmd --add-port=3001/tcp --permanent && sudo firewall-cmd --reload (CentOS/RHEL)
+   # Check port is listening
+   netstat -ano | findstr :3001
+   
+   # Test connectivity from server to itself
+   Test-NetConnection -ComputerName 192.168.3.3 -Port 3001
 
-5. If using cloud server, check security groups/firewall rules in your cloud provider
+4. If still not working, check Windows Defender Firewall:
+   # Disable temporarily to test (re-enable after!)
+   netsh advfirewall set allprofiles state off
+   # Re-enable
+   netsh advfirewall set allprofiles state on
 
-🔧 Common Issues:
-================
-- Firewall blocking port 3001
-- Cloud security groups not allowing inbound traffic
-- Router/network firewall blocking internal traffic
-- SELinux blocking network connections (on RHEL/CentOS)
+🔧 Windows-Specific Issues:
+==========================
+- Windows Defender Firewall may have additional blocking
+- Network profile (Public/Private/Domain) affects firewall rules
+- Antivirus software may block network connections
+- Windows Advanced Firewall may have conflicting rules
 `);
 
 testConnectivity();
