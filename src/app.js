@@ -16,8 +16,23 @@ export function createApp() {
   // Middleware setup
   app.use(cors({
     origin: API_CONFIG.CORS_ORIGIN,
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200
   }));
+  
+  // Additional headers for better cross-origin support
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  });
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());
@@ -33,7 +48,13 @@ export function createApp() {
     res.json({
       status: "OK",
       timestamp: new Date().toISOString(),
-      service: "receipts-backend"
+      service: "receipts-backend",
+      client_ip: req.ip || req.connection.remoteAddress,
+      headers: {
+        host: req.get('host'),
+        'user-agent': req.get('user-agent'),
+        origin: req.get('origin')
+      }
     });
   });
 

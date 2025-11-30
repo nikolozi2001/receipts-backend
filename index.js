@@ -12,10 +12,13 @@ function startServer() {
   const app = createApp();
   
   const server = app.listen(API_CONFIG.PORT, '0.0.0.0', () => {
+    const address = server.address();
     console.log(`🚀 Police Receipts API running on http://0.0.0.0:${API_CONFIG.PORT}`);
-    console.log(`📋 Health check available at http://localhost:${API_CONFIG.PORT}/health`);
-    console.log(`🔍 Search endpoint: http://localhost:${API_CONFIG.PORT}/api/receipt-by-car`);
+    console.log(`🌐 Accessible from: http://192.168.3.3:${API_CONFIG.PORT}`);
+    console.log(`📋 Health check available at http://192.168.3.3:${API_CONFIG.PORT}/health`);
+    console.log(`🔍 Search endpoint: http://192.168.3.3:${API_CONFIG.PORT}/api/receipt-by-car`);
     console.log(`📖 Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(`📡 Server bound to: ${address.address}:${address.port}`);
   });
 
   // Graceful shutdown
