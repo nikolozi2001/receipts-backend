@@ -11,8 +11,8 @@ dotenv.config();
 function startServer() {
   const app = createApp();
   
-  const server = app.listen(API_CONFIG.PORT, () => {
-    console.log(`🚀 Police Receipts API running on http://localhost:${API_CONFIG.PORT}`);
+  const server = app.listen(API_CONFIG.PORT, '0.0.0.0', () => {
+    console.log(`🚀 Police Receipts API running on http://0.0.0.0:${API_CONFIG.PORT}`);
     console.log(`📋 Health check available at http://localhost:${API_CONFIG.PORT}/health`);
     console.log(`🔍 Search endpoint: http://localhost:${API_CONFIG.PORT}/api/receipt-by-car`);
     console.log(`📖 Environment: ${process.env.NODE_ENV || "development"}`);
