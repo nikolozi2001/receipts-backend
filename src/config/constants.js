@@ -7,7 +7,8 @@ export const API_CONFIG = {
 // Police API endpoints
 export const POLICE_ENDPOINTS = {
   BASE: "https://police.ge/protocol/index.php",
-  SEARCH_BY_AUTO: "https://police.ge/protocol/index.php?url=protocols/searchByAuto"
+  SEARCH_BY_AUTO: "https://police.ge/protocol/index.php?url=protocols/searchByAuto",
+  SEARCH_BY_PERSON: "https://police.ge/protocol/index.php?url=protocols/searchByPerson"
 };
 
 // HTTP Headers for police.ge requests

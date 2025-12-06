@@ -86,4 +86,58 @@ export class PoliceService {
       throw new Error("Failed to search protocols");
     }
   }
+
+  /**
+   * Search for protocols by person details
+   * @param {string} personalNo - The personal number to search for
+   * @param {string} lastName - The last name to search for
+   * @param {string} birthDate - The birth date in DD.MM.YYYY format
+   * @returns {Object} Search results from police.ge
+   */
+  async searchByPerson(personalNo, lastName, birthDate) {
+    try {
+      const { cookie, csrf } = await this.createSession();
+
+      const form = new URLSearchParams();
+      form.append("firstResult", "0");
+      form.append("personalNo", personalNo);
+      form.append("lastName", lastName);
+      form.append("birthDate", birthDate);
+
+      // Add CSRF token if it exists
+      if (csrf) {
+        form.append("csrf_token", csrf);
+      }
+
+      console.log("Person Search Request Body:", form.toString());
+
+      const response = await fetch(POLICE_ENDPOINTS.SEARCH_BY_PERSON, {
+        method: "POST",
+        headers: {
+          Cookie: cookie,
+          ...DEFAULT_HEADERS,
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          Referer: "https://police.ge/protocol/index.php#",
+          "X-Requested-With": "XMLHttpRequest",
+          Accept: "application/json, text/javascript, */*; q=0.01"
+        },
+        body: form.toString()
+      });
+
+      const text = await response.text();
+      
+      console.log("Person Search Response Status:", response.status);
+      console.log("Person Search Response Text:", text.substring(0, 500));
+
+      try {
+        return JSON.parse(text);
+      } catch (parseError) {
+        console.log("JSON Parse Error:", parseError.message);
+        return { success: false, html: text };
+      }
+    } catch (error) {
+      console.error("Error searching by person:", error);
+      throw new Error("Failed to search protocols by person");
+    }
+  }
 }
